@@ -455,8 +455,8 @@ function gerarRelatorio(tipo, dados) {
   if (tipo === "beneficiarios") {
     body = `<h2 style="margin:0 0 18px;font-size:18px">Beneficiários — ${beneficiarios.length}</h2>
       <table width="100%" cellspacing="0" style="border-collapse:collapse;border:1px solid #E5E7EB">
-        <tr><th style="${th}">Nome</th><th style="${th}">CPF</th><th style="${th}">NIS</th><th style="${th}">Bairro</th><th style="${th}">Pessoas</th><th style="${th}">Renda</th></tr>
-        ${beneficiarios.map((b, i) => `<tr style="background:${i % 2 ? "#F9FAFB" : "#fff"}"><td style="${td}">${b.nome}</td><td style="${td}">${b.cpf || "—"}</td><td style="${td}">${b.temNIS && b.nis ? b.nis : "—"}</td><td style="${td}">${b.bairro || "—"}</td><td style="${td}">${b.numPessoas || "—"}</td><td style="${td}">${b.renda ? fCur(b.renda) : "—"}</td></tr>`).join("")}
+        <tr><th style="${th}">Nome</th><th style="${th}">CPF</th><th style="${th}">NIS</th><th style="${th}">Bairro</th><th style="${th}">Pessoas</th><th style="${th}">Renda</th><th style="${th}">Primeiro cadastro</th></tr>
+        ${beneficiarios.map((b, i) => `<tr style="background:${i % 2 ? "#F9FAFB" : "#fff"}"><td style="${td}">${b.nome}</td><td style="${td}">${b.cpf || "—"}</td><td style="${td}">${b.temNIS && b.nis ? b.nis : "—"}</td><td style="${td}">${b.bairro || "—"}</td><td style="${td}">${b.numPessoas || "—"}</td><td style="${td}">${b.renda ? fCur(b.renda) : "—"}</td><td style="${td}">${b.dataRegistro ? new Date(b.dataRegistro).toLocaleDateString("pt-BR") : "—"}</td></tr>`).join("")}
       </table>`;
   } else if (tipo === "atendimentos") {
     body = `<h2 style="margin:0 0 18px;font-size:18px">Atendimentos — ${atendimentos.length}</h2>
@@ -497,8 +497,8 @@ function gerarRelatorioFamilia(entidade, familias) {
       <tr><td style="padding:6px 0"><strong>CPF Responsável:</strong> ${entidade.cpfResp || "—"}</td><td style="padding:6px 0"><strong>Data:</strong> ${now}</td></tr>
     </table>
     <table width="100%" style="border-collapse:collapse;border:1px solid #E5E7EB">
-      <tr><th style="${th}">Nº</th><th style="${th}">Chefe / CPF</th><th style="${th}">Mãe do chefe</th><th style="${th}">Endereço</th><th style="${th}">NIS</th><th style="${th}">0-6</th><th style="${th}">7-14</th><th style="${th}">15-23</th><th style="${th}">24-65</th><th style="${th}">+65</th></tr>
-      ${familias.map((f, i) => `<tr><td style="${td};text-align:center;font-weight:700">${i + 1}</td><td style="${td}"><strong>${f.chefeNome || "—"}</strong><br/><span style="color:#6B7280">CPF: ${f.chefeCPF || "—"}</span></td><td style="${td}">${f.maeNome || "—"}</td><td style="${td}">${f.endereco || "—"}</td><td style="${td}">${f.nis || "—"}</td><td style="${td};text-align:center">${f.faixa1 || ""}</td><td style="${td};text-align:center">${f.faixa2 || ""}</td><td style="${td};text-align:center">${f.faixa3 || ""}</td><td style="${td};text-align:center">${f.faixa4 || ""}</td><td style="${td};text-align:center">${f.faixa5 || ""}</td></tr>`).join("")}
+      <tr><th style="${th}">Nº</th><th style="${th}">Chefe / CPF</th><th style="${th}">Mãe do chefe</th><th style="${th}">Endereço</th><th style="${th}">NIS</th><th style="${th}">Cadastro</th><th style="${th}">0-6</th><th style="${th}">7-14</th><th style="${th}">15-23</th><th style="${th}">24-65</th><th style="${th}">+65</th></tr>
+      ${familias.map((f, i) => `<tr><td style="${td};text-align:center;font-weight:700">${i + 1}</td><td style="${td}"><strong>${f.chefeNome || "—"}</strong><br/><span style="color:#6B7280">CPF: ${f.chefeCPF || "—"}</span></td><td style="${td}">${f.maeNome || "—"}</td><td style="${td}">${f.endereco || "—"}</td><td style="${td}">${f.nis || "—"}</td><td style="${td}">${f.dataRegistro ? new Date(f.dataRegistro).toLocaleDateString("pt-BR") : "—"}</td><td style="${td};text-align:center">${f.faixa1 || ""}</td><td style="${td};text-align:center">${f.faixa2 || ""}</td><td style="${td};text-align:center">${f.faixa3 || ""}</td><td style="${td};text-align:center">${f.faixa4 || ""}</td><td style="${td};text-align:center">${f.faixa5 || ""}</td></tr>`).join("")}
     </table>
     <p style="font-size:11px;color:#6B7280;margin-top:8px">Pessoas/Idade — quantidade por faixa etária</p>
     </body></html>`;
@@ -571,6 +571,10 @@ function BeneficiariosModule({ beneficiarios, setBeneficiarios, atendimentos }) 
       <FormSection step="1" title="Identificação pessoal">
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <Inp label="Nome completo" required value={form.nome} onChange={f("nome")} placeholder="Ex: Maria da Silva" autoComplete="name" error={erros.nome} />
+          <div style={{ background: "var(--green-50)", border: "1.5px solid var(--green-100)", borderRadius: "var(--radius-xs)", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <span style={{ fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 700, color: "var(--green-700)", textTransform: "uppercase", letterSpacing: "0.06em" }}>📅 Data do primeiro cadastro</span>
+            <span style={{ fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 700, color: "var(--green-800)" }}>{new Date().toLocaleDateString("pt-BR")}</span>
+          </div>
           <div className="form-grid-3">
             <Inp label="Data de nascimento" type="date" value={form.dataNascimento} onChange={f("dataNascimento")} />
             <Sel label="Sexo" value={form.sexo} onChange={f("sexo")}>
@@ -848,10 +852,10 @@ function FamiliasModule({ entidade, setEntidade, familias, setFamilias }) {
       return;
     }
     if (editFam) {
-      const novas = familias.map(f => f.id === editFam.id ? { ...fFam, id: editFam.id } : f);
+      const novas = familias.map(f => f.id === editFam.id ? { ...fFam, id: editFam.id, dataRegistro: f.dataRegistro || new Date().toISOString() } : f);
       await sSet("familias", novas); setFamilias(novas);
     } else {
-      const novas = [...familias, { ...fFam, id: uid() }];
+      const novas = [...familias, { ...fFam, id: uid(), dataRegistro: new Date().toISOString() }];
       await sSet("familias", novas); setFamilias(novas);
     }
     haptic(true);
