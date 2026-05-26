@@ -63,7 +63,13 @@ function mTel(v) {
 function vTel(v) { return v.replace(/\D/g, "").length >= 10; }
 function mCEP(v) { return v.replace(/\D/g, "").slice(0, 8).replace(/(\d{5})(\d{0,3})/, "$1-$2").replace(/-$/, ""); }
 function vCEP(v) { return v.replace(/\D/g, "").length === 8; }
-function mNIS(v) { return v.replace(/\D/g, "").slice(0, 11).replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{5})(\d)/, "$1.$2").replace(/(\d{2})(\d)/, "$1-$2"); }
+function mNIS(v) {
+  const n = v.replace(/\D/g, "").slice(0, 11);
+  if (n.length <= 3) return n;
+  if (n.length <= 8) return n.slice(0,3) + "." + n.slice(3);
+  if (n.length <= 10) return n.slice(0,3) + "." + n.slice(3,8) + "." + n.slice(8);
+  return n.slice(0,3) + "." + n.slice(3,8) + "." + n.slice(8,10) + "-" + n.slice(10);
+}
 function vNIS(v) { return v.replace(/\D/g, "").length === 11; }
 function mCNPJ(v) { return v.replace(/\D/g, "").slice(0, 14).replace(/(\d{2})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1/$2").replace(/(\d{4})(\d{1,2})$/, "$1-$2"); }
 
@@ -169,6 +175,8 @@ button { -webkit-tap-highlight-color: transparent; }
 .stat-card.purple .stat-value { color: var(--purple-700); }
 .stat-card.red .stat-value { color: var(--red-700); }
 .stat-card.pink .stat-value { color: #DB2777; }
+.stats-3 { grid-template-columns: repeat(3,1fr); }
+@media (max-width: 720px) { .stats-3 { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 720px) { .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; } .stat-card { padding: 13px 14px; } .stat-value { font-size: 24px; } .stat-label { font-size: 10px; } }
 
 .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -916,7 +924,7 @@ function FamiliasModule({ entidade, setEntidade, familias, setFamilias }) {
       </div>}
 
       {tab === "lista" && <>
-        <div className="stats-grid" style={{ gridTemplateColumns: "repeat(3,1fr)" }}>
+        <div className="stats-grid stats-3">
           <StatCard label="Famílias" value={familias.length} color="green" />
           <StatCard label="Pessoas" value={totalPessoas} color="blue" />
           <StatCard label="Com NIS" value={comNIS} color="pink" />
@@ -1047,7 +1055,7 @@ function DoacoesModule({ estoque, setEstoque, movs, setMovs, metas, setMetas }) 
       <InnerTabs active={tab} onChange={setTab} tabs={[["estoque", "📦 Estoque"], ["entrada", "⬇ Entrada"], ["saida", "⬆ Saída"], ["metas", "🎯 Metas"], ["historico", "📋 Histórico"]]} />
 
       {tab === "estoque" && <>
-        <div className="stats-grid" style={{ gridTemplateColumns: "repeat(3,1fr)" }}>
+        <div className="stats-grid stats-3">
           <StatCard label="Tipos" value={estoque.length} color="green" />
           <StatCard label="Unidades" value={estoque.reduce((s, i) => s + i.quantidade, 0)} color="blue" />
           <StatCard label="Baixo estoque" value={baixo.length} color={baixo.length > 0 ? "red" : "green"} />
@@ -1172,7 +1180,7 @@ function DoacoesModule({ estoque, setEstoque, movs, setMovs, metas, setMetas }) 
       </>}
 
       {tab === "historico" && <>
-        <div className="stats-grid" style={{ gridTemplateColumns: "repeat(3,1fr)", marginBottom: 18 }}>
+        <div className="stats-grid stats-3" style={{ marginBottom: 18 }}>
           <StatCard label="Entradas" value={movs.filter(m => m.tipo === "entrada").reduce((s, m) => s + m.quantidade, 0)} color="green" />
           <StatCard label="Saídas" value={movs.filter(m => m.tipo === "saida").reduce((s, m) => s + m.quantidade, 0)} color="amber" />
           <StatCard label="Registros" value={movs.length} color="blue" />
