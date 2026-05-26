@@ -498,7 +498,7 @@ function gerarRelatorioFamilia(entidade, familias) {
     </table>
     <table width="100%" style="border-collapse:collapse;border:1px solid #E5E7EB">
       <tr><th style="${th}">Nº</th><th style="${th}">Chefe / CPF</th><th style="${th}">Mãe do chefe</th><th style="${th}">Endereço</th><th style="${th}">NIS</th><th style="${th}">Cadastro</th><th style="${th}">0-6</th><th style="${th}">7-14</th><th style="${th}">15-23</th><th style="${th}">24-65</th><th style="${th}">+65</th></tr>
-      ${familias.map((f, i) => `<tr><td style="${td};text-align:center;font-weight:700">${i + 1}</td><td style="${td}"><strong>${f.chefeNome || "—"}</strong><br/><span style="color:#6B7280">CPF: ${f.chefeCPF || "—"}</span></td><td style="${td}">${f.maeNome || "—"}</td><td style="${td}">${f.endereco || "—"}</td><td style="${td}">${f.nis || "—"}</td><td style="${td}">${f.dataRegistro ? new Date(f.dataRegistro).toLocaleDateString("pt-BR") : "—"}</td><td style="${td};text-align:center">${f.faixa1 || ""}</td><td style="${td};text-align:center">${f.faixa2 || ""}</td><td style="${td};text-align:center">${f.faixa3 || ""}</td><td style="${td};text-align:center">${f.faixa4 || ""}</td><td style="${td};text-align:center">${f.faixa5 || ""}</td></tr>`).join("")}
+      ${familias.map((f, i) => `<tr><td style="${td};text-align:center;font-weight:700">${i + 1}</td><td style="${td}"><strong>${f.chefeNome || "—"}</strong><br/><span style="color:#6B7280">CPF: ${f.chefeCPF || "—"}</span></td><td style="${td}">${f.maeNome || "—"}</td><td style="${td}">${f.endereco || "—"}</td><td style="${td}">${f.nis || "—"}</td><td style="${td}">${f.dataRegistro ? new Date(f.dataRegistro).toLocaleDateString("pt-BR") : "—"}</td><td style="${td}">${f.dataRegistro ? new Date(f.dataRegistro).toLocaleDateString("pt-BR") : "—"}</td><td style="${td};text-align:center">${f.faixa1 || ""}</td><td style="${td};text-align:center">${f.faixa2 || ""}</td><td style="${td};text-align:center">${f.faixa3 || ""}</td><td style="${td};text-align:center">${f.faixa4 || ""}</td><td style="${td};text-align:center">${f.faixa5 || ""}</td></tr>`).join("")}
     </table>
     <p style="font-size:11px;color:#6B7280;margin-top:8px">Pessoas/Idade — quantidade por faixa etária</p>
     </body></html>`;
@@ -513,7 +513,7 @@ function BeneficiariosModule({ beneficiarios, setBeneficiarios, atendimentos }) 
   const [view, setView] = useState("list");
   const [sel, setSel] = useState(null);
   const [search, setSearch] = useState("");
-  const EF = { nome: "", dataNascimento: "", sexo: "", nomeMae: "", rg: "", cpf: "", temNIS: false, nis: "", escolaridade: "", religiao: "", telefone: "", cep: "", endereco: "", numero: "", complemento: "", bairro: "", pontoReferencia: "", numPessoas: "", idadesPessoas: "", composicaoFamiliar: "", relacionamentoFamiliar: "", profissao: "", ondeTrabalha: "", renda: "", pessoasDependem: "", beneficio: "", moradia: "", demanda: "", necessidades: "", interesseFormacao: "", parecerProfissional: "", encaminhamentos: "", profissionalResponsavel: "", observacoes: "" };
+  const EF = { nome: "", dataNascimento: "", sexo: "", nomeMae: "", rg: "", cpf: "", temNIS: false, nis: "", escolaridade: "", religiao: "", telefone: "", cep: "", endereco: "", numero: "", complemento: "", bairro: "", pontoReferencia: "", numPessoas: "", idadesPessoas: "", composicaoFamiliar: "", relacionamentoFamiliar: "", profissao: "", ondeTrabalha: "", renda: "", pessoasDependem: "", beneficio: "", moradia: "", demanda: "", necessidades: "", interesseFormacao: "", parecerProfissional: "", encaminhamentos: "", profissionalResponsavel: "", observacoes: "", dataRegistro: "" };
   const [form, setForm] = useState(EF);
   const [erros, setErros] = useState({});
 
@@ -543,7 +543,7 @@ function BeneficiariosModule({ beneficiarios, setBeneficiarios, atendimentos }) 
       await showAlert("Há campos com erros. Verifique os campos marcados em vermelho.", { title: "Atenção", variant: "warning" });
       return;
     }
-    await save([...beneficiarios, { ...form, id: uid(), dataRegistro: new Date().toISOString() }]);
+    await save([...beneficiarios, { ...form, id: uid(), dataRegistro: form.dataRegistro ? new Date(form.dataRegistro.split('/').reverse().join('-')).toISOString() : new Date().toISOString() }]);
     haptic(true);
     await showAlert("Beneficiário cadastrado com sucesso!", { title: "Tudo certo!", variant: "success" });
     setForm(EF); setErros({}); setView("list");
@@ -571,6 +571,7 @@ function BeneficiariosModule({ beneficiarios, setBeneficiarios, atendimentos }) 
       <FormSection step="1" title="Identificação pessoal">
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <Inp label="Nome completo" required value={form.nome} onChange={f("nome")} placeholder="Ex: Maria da Silva" autoComplete="name" error={erros.nome} />
+          <Inp label="Data do primeiro cadastro" value={form.dataRegistro} onChange={f("dataRegistro")} placeholder="DD/MM/AAAA" hint="Deixe em branco para usar a data de hoje. Preencha se for um cadastro antigo." type="date" />
           <div style={{ background: "var(--green-50)", border: "1.5px solid var(--green-100)", borderRadius: "var(--radius-xs)", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <span style={{ fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 700, color: "var(--green-700)", textTransform: "uppercase", letterSpacing: "0.06em" }}>📅 Data do primeiro cadastro</span>
             <span style={{ fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 700, color: "var(--green-800)" }}>{new Date().toLocaleDateString("pt-BR")}</span>
@@ -814,7 +815,7 @@ function FamiliasModule({ entidade, setEntidade, familias, setFamilias }) {
   const [showFamForm, setShowFamForm] = useState(false);
   const [editFam, setEditFam] = useState(null);
   const EE = { nome: "", cnpj: "", endereco: "", telefone: "", responsavel: "", cpfResp: "" };
-  const EF = { chefeNome: "", chefeCPF: "", maeNome: "", endereco: "", nis: "", faixa1: "", faixa2: "", faixa3: "", faixa4: "", faixa5: "" };
+  const EF = { chefeNome: "", chefeCPF: "", maeNome: "", endereco: "", nis: "", faixa1: "", faixa2: "", faixa3: "", faixa4: "", faixa5: "", dataRegistro: "" };
   const [fEnt, setFEnt] = useState(entidade || EE);
   const [fFam, setFFam] = useState(EF);
   const [erros, setErros] = useState({});
@@ -855,7 +856,7 @@ function FamiliasModule({ entidade, setEntidade, familias, setFamilias }) {
       const novas = familias.map(f => f.id === editFam.id ? { ...fFam, id: editFam.id, dataRegistro: f.dataRegistro || new Date().toISOString() } : f);
       await sSet("familias", novas); setFamilias(novas);
     } else {
-      const novas = [...familias, { ...fFam, id: uid(), dataRegistro: new Date().toISOString() }];
+      const novas = [...familias, { ...fFam, id: uid(), dataRegistro: fFam.dataRegistro ? new Date(fFam.dataRegistro).toISOString() : new Date().toISOString() }];
       await sSet("familias", novas); setFamilias(novas);
     }
     haptic(true);
@@ -911,6 +912,11 @@ function FamiliasModule({ entidade, setEntidade, familias, setFamilias }) {
           </div>
           <Inp label="Nome da mãe do chefe" value={fFam.maeNome} onChange={fFam_h("maeNome")} placeholder="Nome da mãe" />
           <Inp label="Endereço completo" value={fFam.endereco} onChange={fFam_h("endereco")} placeholder="Rua, número, bairro" />
+          <div className="field">
+            <label className="field-label">Data do primeiro cadastro</label>
+            <input className="field-input" type="date" value={fFam.dataRegistro} onChange={e => setFFam({ ...fFam, dataRegistro: e.target.value })} />
+            <span className="field-hint">Deixe em branco para usar a data de hoje. Preencha se for um cadastro antigo.</span>
+          </div>
           <p style={{ fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 700, color: "var(--gray-500)", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 6 }}>Pessoas por faixa etária</p>
           <div className="form-grid-4" style={{ gridTemplateColumns: "repeat(5,1fr)" }}>
             <Inp label="0-6" type="number" min="0" inputMode="numeric" value={fFam.faixa1} onChange={fFam_h("faixa1")} placeholder="0" />
