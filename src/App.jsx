@@ -371,9 +371,9 @@ function PartilharLogo() {
         <circle cx="29" cy="6" r="1" fill="#7F2A4D" />
         <circle cx="49" cy="6" r="1" fill="#7F2A4D" />
       </g>
-      <text x="92" y="24" fontFamily="Inter, sans-serif" fontSize="11" fill="rgba(255,255,255,0.7)" fontWeight="600" letterSpacing="1.5">GRUPO</text>
+      <text x="92" y="24" fontFamily="Inter, sans-serif" fontSize="14" fill="rgba(255,255,255,0.85)" fontWeight="700" letterSpacing="1.5">GRUPO</text>
       <text x="92" y="62" fontFamily="Quicksand, sans-serif" fontSize="38" fill="#A3D900" fontWeight="700">Partilhar</text>
-      <text x="94" y="80" fontFamily="Inter, sans-serif" fontSize="9" fill="rgba(255,255,255,0.6)" letterSpacing="2.5" fontWeight="500">ILUMINANDO CAMINHOS</text>
+      <text x="94" y="80" fontFamily="Inter, sans-serif" fontSize="11.5" fill="rgba(255,255,255,0.75)" letterSpacing="2" fontWeight="600">ILUMINANDO CAMINHOS</text>
     </svg>
   );
 }
@@ -498,7 +498,7 @@ function gerarRelatorioFamilia(entidade, familias) {
     </table>
     <table width="100%" style="border-collapse:collapse;border:1px solid #E5E7EB">
       <tr><th style="${th}">Nº</th><th style="${th}">Chefe / CPF</th><th style="${th}">Mãe do chefe</th><th style="${th}">Endereço</th><th style="${th}">NIS</th><th style="${th}">Cadastro</th><th style="${th}">0-6</th><th style="${th}">7-14</th><th style="${th}">15-23</th><th style="${th}">24-65</th><th style="${th}">+65</th></tr>
-      ${familias.map((f, i) => `<tr><td style="${td};text-align:center;font-weight:700">${i + 1}</td><td style="${td}"><strong>${f.chefeNome || "—"}</strong><br/><span style="color:#6B7280">CPF: ${f.chefeCPF || "—"}</span></td><td style="${td}">${f.maeNome || "—"}</td><td style="${td}">${f.endereco || "—"}</td><td style="${td}">${f.nis || "—"}</td><td style="${td}">${f.dataRegistro ? new Date(f.dataRegistro).toLocaleDateString("pt-BR") : "—"}</td><td style="${td}">${f.dataRegistro ? new Date(f.dataRegistro).toLocaleDateString("pt-BR") : "—"}</td><td style="${td};text-align:center">${parseInt(f.faixa1) || ""}</td><td style="${td};text-align:center">${parseInt(f.faixa2) || ""}</td><td style="${td};text-align:center">${parseInt(f.faixa3) || ""}</td><td style="${td};text-align:center">${parseInt(f.faixa4) || ""}</td><td style="${td};text-align:center">${parseInt(f.faixa5) || ""}</td></tr>`).join("")}
+      ${familias.map((f, i) => `<tr><td style="${td};text-align:center;font-weight:700">${i + 1}</td><td style="${td}"><strong>${f.chefeNome || "—"}</strong><br/><span style="color:#6B7280">CPF: ${f.chefeCPF || "—"}</span></td><td style="${td}">${f.maeNome || "—"}</td><td style="${td}">${f.endereco || "—"}</td><td style="${td}">${f.nis || "—"}</td><td style="${td}">${f.dataRegistro ? new Date(f.dataRegistro).toLocaleDateString("pt-BR") : "—"}</td><td style="${td}">${f.dataRegistro ? new Date(f.dataRegistro).toLocaleDateString("pt-BR") : "—"}</td><td style="${td};text-align:center">${/^\d+$/.test(String(f.faixa1 || "").trim()) ? f.faixa1 : ""}</td><td style="${td};text-align:center">${/^\d+$/.test(String(f.faixa2 || "").trim()) ? f.faixa2 : ""}</td><td style="${td};text-align:center">${/^\d+$/.test(String(f.faixa3 || "").trim()) ? f.faixa3 : ""}</td><td style="${td};text-align:center">${/^\d+$/.test(String(f.faixa4 || "").trim()) ? f.faixa4 : ""}</td><td style="${td};text-align:center">${/^\d+$/.test(String(f.faixa5 || "").trim()) ? f.faixa5 : ""}</td></tr>`).join("")}
     </table>
     <p style="font-size:11px;color:#6B7280;margin-top:8px">Pessoas/Idade — quantidade por faixa etária</p>
     </body></html>`;
