@@ -354,26 +354,36 @@ textarea.field-input { resize: vertical; min-height: 88px; line-height: 1.6; }
 // ── Logo SVG ──────────────────────────────────────────────────────
 function PartilharLogo() {
   return (
-    <svg className="header-logo-svg" viewBox="0 0 340 90" xmlns="http://www.w3.org/2000/svg">
-      <g transform="translate(8, 15)">
-        <ellipse cx="20" cy="22" rx="20" ry="14" fill="#F472B6" stroke="#7F2A4D" strokeWidth="1.2" transform="rotate(-25 20 22)" />
-        <ellipse cx="58" cy="22" rx="20" ry="14" fill="#F472B6" stroke="#7F2A4D" strokeWidth="1.2" transform="rotate(25 58 22)" />
-        <ellipse cx="22" cy="46" rx="15" ry="11" fill="#F472B6" stroke="#7F2A4D" strokeWidth="1.2" transform="rotate(20 22 46)" />
-        <ellipse cx="56" cy="46" rx="15" ry="11" fill="#F472B6" stroke="#7F2A4D" strokeWidth="1.2" transform="rotate(-20 56 46)" />
-        <ellipse cx="20" cy="22" rx="11" ry="7" fill="#FDE047" transform="rotate(-25 20 22)" />
-        <ellipse cx="58" cy="22" rx="11" ry="7" fill="#FDE047" transform="rotate(25 58 22)" />
-        <ellipse cx="22" cy="46" rx="8" ry="6" fill="#FDE047" transform="rotate(20 22 46)" />
-        <ellipse cx="56" cy="46" rx="8" ry="6" fill="#FDE047" transform="rotate(-20 56 46)" />
-        <ellipse cx="39" cy="34" rx="2.5" ry="20" fill="#7F2A4D" />
-        <circle cx="39" cy="14" r="2.8" fill="#7F2A4D" />
-        <path d="M37 11 Q 32 4, 29 6" stroke="#7F2A4D" strokeWidth="1.2" fill="none" strokeLinecap="round" />
-        <path d="M41 11 Q 46 4, 49 6" stroke="#7F2A4D" strokeWidth="1.2" fill="none" strokeLinecap="round" />
-        <circle cx="29" cy="6" r="1" fill="#7F2A4D" />
-        <circle cx="49" cy="6" r="1" fill="#7F2A4D" />
-      </g>
-      <text x="92" y="24" fontFamily="Inter, sans-serif" fontSize="14" fill="rgba(255,255,255,0.85)" fontWeight="700" letterSpacing="1.5">GRUPO</text>
-      <text x="92" y="62" fontFamily="Quicksand, sans-serif" fontSize="38" fill="#A3D900" fontWeight="700">Partilhar</text>
-      <text x="94" y="80" fontFamily="Inter, sans-serif" fontSize="11.5" fill="rgba(255,255,255,0.75)" letterSpacing="2" fontWeight="600">ILUMINANDO CAMINHOS</text>
+    <svg className="header-logo-svg" viewBox="0 0 420 92" xmlns="http://www.w3.org/2000/svg">
+      {/* Borboleta - asa superior esquerda */}
+      <ellipse cx="24" cy="26" rx="22" ry="15" fill="#F08478" stroke="#C96058" strokeWidth="1" transform="rotate(-28 24 26)"/>
+      {/* Borboleta - asa superior direita */}
+      <ellipse cx="62" cy="26" rx="22" ry="15" fill="#F08478" stroke="#C96058" strokeWidth="1" transform="rotate(28 62 26)"/>
+      {/* Borboleta - asa inferior esquerda */}
+      <ellipse cx="27" cy="52" rx="16" ry="12" fill="#F08478" stroke="#C96058" strokeWidth="1" transform="rotate(22 27 52)"/>
+      {/* Borboleta - asa inferior direita */}
+      <ellipse cx="59" cy="52" rx="16" ry="12" fill="#F08478" stroke="#C96058" strokeWidth="1" transform="rotate(-22 59 52)"/>
+      {/* Manchas amarelas - asas superiores */}
+      <ellipse cx="24" cy="26" rx="12" ry="7.5" fill="#F5D640" transform="rotate(-28 24 26)"/>
+      <ellipse cx="62" cy="26" rx="12" ry="7.5" fill="#F5D640" transform="rotate(28 62 26)"/>
+      {/* Manchas amarelas - asas inferiores */}
+      <ellipse cx="27" cy="52" rx="9" ry="6" fill="#F5D640" transform="rotate(22 27 52)"/>
+      <ellipse cx="59" cy="52" rx="9" ry="6" fill="#F5D640" transform="rotate(-22 59 52)"/>
+      {/* Corpo */}
+      <ellipse cx="43" cy="38" rx="3" ry="22" fill="#8C7B6B"/>
+      {/* Cabeça */}
+      <circle cx="43" cy="16" r="3.5" fill="#8C7B6B"/>
+      {/* Antenas */}
+      <path d="M41 13 Q 35 4 31 6" stroke="#8C7B6B" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+      <path d="M45 13 Q 51 4 55 6" stroke="#8C7B6B" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+      <circle cx="31" cy="6" r="1.8" fill="#8C7B6B"/>
+      <circle cx="55" cy="6" r="1.8" fill="#8C7B6B"/>
+      {/* GRUPO */}
+      <text x="88" y="24" fontFamily="Arial, sans-serif" fontSize="15" fill="rgba(255,255,255,0.9)" fontWeight="700" letterSpacing="2">GRUPO</text>
+      {/* Partilhar */}
+      <text x="86" y="64" fontFamily="'Quicksand', 'Trebuchet MS', Arial, sans-serif" fontSize="44" fill="#A3D900" fontWeight="700" letterSpacing="-0.5">Partilhar</text>
+      {/* ILUMINANDO CAMINHOS */}
+      <text x="89" y="83" fontFamily="Arial, sans-serif" fontSize="12" fill="rgba(255,255,255,0.85)" letterSpacing="2.5" fontWeight="600">ILUMINANDO CAMINHOS</text>
     </svg>
   );
 }
