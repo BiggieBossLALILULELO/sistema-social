@@ -516,6 +516,49 @@ function gerarRelatorioFamilia(entidade, familias) {
   if (w) { w.document.write(html); w.document.close(); }
 }
 
+
+// ══════════════════════════════════════════════════════════════════
+// BACKUP E RESTAURAÇÃO
+// ══════════════════════════════════════════════════════════════════
+async function fazerBackup(dados) {
+  const backup = {
+    versao: "1.0",
+    data: new Date().toISOString(),
+    instituicao: "Grupo Partilhar",
+    dados
+  };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const dataStr = new Date().toLocaleDateString("pt-BR").replace(/\//g, "-");
+  a.href = url;
+  a.download = `backup-partilhar-${dataStr}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function restaurarBackup(file, setters) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const backup = JSON.parse(e.target.result);
+        if (!backup.dados) { reject("Arquivo inválido."); return; }
+        const { beneficiarios, atendimentos, estoque, movimentacoes, metas, entidade, familias } = backup.dados;
+        if (beneficiarios) { await sSet("beneficiarios", beneficiarios); setters.setBeneficiarios(beneficiarios); }
+        if (atendimentos)  { await sSet("atendimentos",  atendimentos);  setters.setAtendimentos(atendimentos); }
+        if (estoque)       { await sSet("estoque",       estoque);       setters.setEstoque(estoque); }
+        if (movimentacoes) { await sSet("movimentacoes", movimentacoes); setters.setMovs(movimentacoes); }
+        if (metas)         { await sSet("metas",         metas);         setters.setMetas(metas); }
+        if (entidade)      { await sSet("entidade",      entidade);      setters.setEntidade(entidade); }
+        if (familias)      { await sSet("familias",      familias);      setters.setFamilias(familias); }
+        resolve(backup);
+      } catch { reject("Erro ao ler arquivo."); }
+    };
+    reader.readAsText(file);
+  });
+}
+
 // ══════════════════════════════════════════════════════════════════
 // BENEFICIÁRIOS
 // ══════════════════════════════════════════════════════════════════
@@ -1339,7 +1382,7 @@ function AtendimentosModule({ atendimentos, setAtendimentos, beneficiarios, esto
 // ══════════════════════════════════════════════════════════════════
 // RELATÓRIOS
 // ══════════════════════════════════════════════════════════════════
-function RelatoriosModule({ beneficiarios, atendimentos, estoque, movs }) {
+function RelatoriosModule({ beneficiarios, atendimentos, estoque, movs, metas, entidade, familias, setters }) {
   const dados = { beneficiarios, atendimentos, estoque, movs };
   const mes = nowYM();
   const totalPessoas = beneficiarios.reduce((s, b) => s + (Number(b.numPessoas) || 0), 0);
@@ -1378,6 +1421,48 @@ function RelatoriosModule({ beneficiarios, atendimentos, estoque, movs }) {
         <StatCard label="Recebidos" value={movs.filter(m => m.tipo === "entrada" && m.data?.startsWith(mes)).reduce((s, m) => s + m.quantidade, 0)} color="green" />
         <StatCard label="Distribuídos" value={movs.filter(m => m.tipo === "saida" && m.data?.startsWith(mes)).reduce((s, m) => s + m.quantidade, 0)} color="amber" />
         <StatCard label="Doadores" value={[...new Set(movs.filter(m => m.tipo === "entrada" && m.doador && m.data?.startsWith(mes)).map(m => m.doador))].length} color="blue" />
+      </div>
+      <h3 style={{ fontFamily: "var(--font-sans)", fontSize: 16, fontWeight: 700, marginBottom: 16 }}>💾 Backup dos dados</h3>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 32 }}>
+        <div className="rel-export-card">
+          <div style={{ display: "flex", alignItems: "center", gap: 16, flex: 1 }}>
+            <span className="rel-export-icon">💾</span>
+            <div>
+              <p className="rel-export-title">Fazer backup completo</p>
+              <p className="rel-export-desc">Baixa um arquivo com todos os dados — beneficiários, famílias, doações e atendimentos</p>
+            </div>
+          </div>
+          <Btn variant="primary" size="md" onClick={() => fazerBackup({ beneficiarios, atendimentos, estoque, movimentacoes: movs, metas, entidade, familias })}>💾 Baixar backup</Btn>
+        </div>
+        <div className="rel-export-card">
+          <div style={{ display: "flex", alignItems: "center", gap: 16, flex: 1 }}>
+            <span className="rel-export-icon">📥</span>
+            <div>
+              <p className="rel-export-title">Restaurar backup</p>
+              <p className="rel-export-desc">Importa um arquivo de backup — use ao trocar de celular ou computador</p>
+            </div>
+          </div>
+          <label style={{ cursor: "pointer" }}>
+            <input type="file" accept=".json" style={{ display: "none" }} onChange={async (e) => {
+              if (!e.target.files[0]) return;
+              const ok = await showConfirm("Restaurar o backup vai substituir todos os dados atuais. Deseja continuar?", { title: "Restaurar backup", variant: "danger", confirmLabel: "Sim, restaurar" });
+              if (!ok) return;
+              try {
+                await restaurarBackup(e.target.files[0], setters);
+                haptic(true);
+                await showAlert("Backup restaurado com sucesso! Todos os dados foram importados.", { title: "✅ Restaurado!", variant: "success" });
+              } catch (err) { await showAlert("Erro ao restaurar: " + err, { variant: "danger", title: "Erro" }); }
+            }}/>
+            <span className="btn btn-md btn-ghost">📥 Selecionar arquivo</span>
+          </label>
+        </div>
+        <div className="alert alert-amber" style={{ marginBottom: 0 }}>
+          <span className="alert-icon">💡</span>
+          <div>
+            <p style={{ fontFamily: "var(--font-sans)", fontWeight: 700, color: "var(--amber-700)", fontSize: 14 }}>Dica importante</p>
+            <p style={{ fontSize: 13, color: "var(--amber-700)" }}>Faça backup regularmente e salve o arquivo no WhatsApp, Google Drive ou e-mail. Ao trocar de celular, abra o sistema no novo aparelho, vá em Relatórios e clique em "Restaurar backup".</p>
+          </div>
+        </div>
       </div>
       <h3 style={{ fontFamily: "var(--font-sans)", fontSize: 16, fontWeight: 700, marginBottom: 14 }}>🏘 Por bairro</h3>
       {beneficiarios.length === 0 ? <Empty icon="🗺" title="Nenhum dado" sub="Os dados aparecerão conforme cadastrar." />
@@ -1472,7 +1557,7 @@ export default function App() {
               {mod === "familias" && <FamiliasModule entidade={entidade} setEntidade={setEntidade} familias={familias} setFamilias={setFamilias} />}
               {mod === "doacoes" && <DoacoesModule estoque={estoque} setEstoque={setEstoque} movs={movs} setMovs={setMovs} metas={metas} setMetas={setMetas} />}
               {mod === "atendimentos" && <AtendimentosModule atendimentos={atendimentos} setAtendimentos={setAtendimentos} beneficiarios={beneficiarios} estoque={estoque} setEstoque={setEstoque} movs={movs} setMovs={setMovs} />}
-              {mod === "relatorios" && <RelatoriosModule beneficiarios={beneficiarios} atendimentos={atendimentos} estoque={estoque} movs={movs} />}
+              {mod === "relatorios" && <RelatoriosModule beneficiarios={beneficiarios} atendimentos={atendimentos} estoque={estoque} movs={movs} metas={metas} entidade={entidade} familias={familias} setters={{ setBeneficiarios, setAtendimentos, setEstoque, setMovs, setMetas, setEntidade, setFamilias }} />}
             </>}
         </div>
       </main>
