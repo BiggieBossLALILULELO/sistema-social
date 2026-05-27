@@ -498,7 +498,7 @@ function gerarRelatorioFamilia(entidade, familias) {
     </table>
     <table width="100%" style="border-collapse:collapse;border:1px solid #E5E7EB">
       <tr><th style="${th}">Nº</th><th style="${th}">Chefe / CPF</th><th style="${th}">Mãe do chefe</th><th style="${th}">Endereço</th><th style="${th}">NIS</th><th style="${th}">Cadastro</th><th style="${th}">0-6</th><th style="${th}">7-14</th><th style="${th}">15-23</th><th style="${th}">24-65</th><th style="${th}">+65</th></tr>
-      ${familias.map((f, i) => `<tr><td style="${td};text-align:center;font-weight:700">${i + 1}</td><td style="${td}"><strong>${f.chefeNome || "—"}</strong><br/><span style="color:#6B7280">CPF: ${f.chefeCPF || "—"}</span></td><td style="${td}">${f.maeNome || "—"}</td><td style="${td}">${f.endereco || "—"}</td><td style="${td}">${f.nis || "—"}</td><td style="${td}">${f.dataRegistro ? new Date(f.dataRegistro).toLocaleDateString("pt-BR") : "—"}</td><td style="${td}">${f.dataRegistro ? new Date(f.dataRegistro).toLocaleDateString("pt-BR") : "—"}</td><td style="${td};text-align:center">${f.faixa1 || ""}</td><td style="${td};text-align:center">${f.faixa2 || ""}</td><td style="${td};text-align:center">${f.faixa3 || ""}</td><td style="${td};text-align:center">${f.faixa4 || ""}</td><td style="${td};text-align:center">${f.faixa5 || ""}</td></tr>`).join("")}
+      ${familias.map((f, i) => `<tr><td style="${td};text-align:center;font-weight:700">${i + 1}</td><td style="${td}"><strong>${f.chefeNome || "—"}</strong><br/><span style="color:#6B7280">CPF: ${f.chefeCPF || "—"}</span></td><td style="${td}">${f.maeNome || "—"}</td><td style="${td}">${f.endereco || "—"}</td><td style="${td}">${f.nis || "—"}</td><td style="${td}">${f.dataRegistro ? new Date(f.dataRegistro).toLocaleDateString("pt-BR") : "—"}</td><td style="${td}">${f.dataRegistro ? new Date(f.dataRegistro).toLocaleDateString("pt-BR") : "—"}</td><td style="${td};text-align:center">${parseInt(f.faixa1) || ""}</td><td style="${td};text-align:center">${parseInt(f.faixa2) || ""}</td><td style="${td};text-align:center">${parseInt(f.faixa3) || ""}</td><td style="${td};text-align:center">${parseInt(f.faixa4) || ""}</td><td style="${td};text-align:center">${parseInt(f.faixa5) || ""}</td></tr>`).join("")}
     </table>
     <p style="font-size:11px;color:#6B7280;margin-top:8px">Pessoas/Idade — quantidade por faixa etária</p>
     </body></html>`;
@@ -963,11 +963,11 @@ function FamiliasModule({ entidade, setEntidade, familias, setFamilias }) {
                       <td>{f.maeNome || "—"}</td>
                       <td style={{ maxWidth: 200 }}>{f.endereco || "—"}</td>
                       <td>{f.nis ? <Badge color="pink">{f.nis}</Badge> : "—"}</td>
-                      <td className="age-col">{f.faixa1 || ""}</td>
-                      <td className="age-col">{f.faixa2 || ""}</td>
-                      <td className="age-col">{f.faixa3 || ""}</td>
-                      <td className="age-col">{f.faixa4 || ""}</td>
-                      <td className="age-col">{f.faixa5 || ""}</td>
+                      <td className="age-col">{parseInt(f.faixa1) || "—"}</td>
+                      <td className="age-col">{parseInt(f.faixa2) || "—"}</td>
+                      <td className="age-col">{parseInt(f.faixa3) || "—"}</td>
+                      <td className="age-col">{parseInt(f.faixa4) || "—"}</td>
+                      <td className="age-col">{parseInt(f.faixa5) || "—"}</td>
                       <td className="action-col"><div style={{ display: "flex", gap: 4, justifyContent: "center" }}>
                         <button className="btn btn-sm btn-info btn-icon-action" onClick={() => editarFamilia(f)}>✏</button>
                         <button className="btn btn-sm btn-danger btn-icon-action" onClick={() => removerFamilia(f.id)}>🗑</button>
